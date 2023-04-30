@@ -3,15 +3,15 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import Mui from './components/Mui';
-import Try1 from './components/try1';
+import Register1 from './components/Register1';
+import TailWind from './components/TailWind';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-   <React.StrictMode>
+  <React.StrictMode>
     {/* <App /> */}
-    {/* <Try1/> */}
-    <Mui/>
+    {/* <Register1/> */}
+    <TailWind/>
   </React.StrictMode>
 );
 
