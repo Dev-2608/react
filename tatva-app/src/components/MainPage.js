@@ -11,7 +11,7 @@ function MainPage() {
   return (
     <div>
         <div className="container">
-        <div className='upperredline'></div>
+        <div className='container row upperredline'></div>
         <div className='container imagetatva row'>
                     <div className='col-9 imagetatva'>
                         <img src={img1} alt="" className='image1' />
@@ -57,7 +57,7 @@ function MainPage() {
                                     }
 
                                 }
-                                ><span><ShoppingCartIcon variant="contained" style={{ color: "red" }}></ShoppingCartIcon>Cart</span></button>
+                                ><Link to="/product"><span><ShoppingCartIcon variant="contained" style={{ color: "red" }}></ShoppingCartIcon>Cart</span></Link></button>
 
                             </div>
 
