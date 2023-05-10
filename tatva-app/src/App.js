@@ -8,13 +8,15 @@ import { Switch } from 'react-router-dom';
 import Product from './components/Product';
 import ProductList from './components/ProductList1';
 import Editproduct from './components/Editproduct';
+import Cart from './components/Cart';
 
 function App() {
   return (
     <>
       <Router>
         <MainPage ></MainPage>
-        <Editproduct/>
+        {/* <Editproduct/> */}
+        <Cart/>
         <Routes>
           <Route path='/login' element={<Login/>}></Route>
           <Route path='/register' element={<Register1/>}></Route>
