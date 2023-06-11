@@ -1,23 +1,22 @@
-import { MenuItem } from "@mui/base";
-import {
-  Button,
-  FormControl,
-  Pagination,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, Pagination, TextField, Typography } from "@mui/material";
 import React, { useMemo, useState } from "react";
 
 import { useEffect } from "react";
+import { toast } from "react-toastify";
 import { defaultFilter } from "../Constant/constant";
+import { useAuthContext } from "../context/auth";
+import { useCartContext } from "../context/cart";
 
 import bookService from "../service/book.service";
 import categoryService from "../service/category.service";
+import shared from "../utils/shared";
 
 function Home() {
   const [filters, setFilters] = useState(defaultFilter);
   const [categories, setCategories] = useState([]);
   const [sortBy, setSortBy] = useState();
+  const authContext = useAuthContext();
+  const cartContext = useCartContext();
   const [bookResponse, setBookResponse] = useState({
     pageIndex: 0,
     pageSize: 10,
@@ -74,20 +73,25 @@ function Home() {
     if (e.target.value === "z-a") {
       bookList.sort((a, b) => b.name.localeCompare(a.name));
     }
-    // bookList = bookList.sort((a, b) => {
-    //   if (a.name < b.name) {
-    //     return e.target.value === "a-z" ? -1 : 1;
-    //   }
-    //   if (a.name > b.name) {
-    //     console.log(e.target.value);
-    //     return e.target.value === "z-a" ? 1 : -1;
-    //   }
-    //   return 0;
-    // });
-    // console.log("book Response : ", bookList);
     setBookResponse({ ...bookResponse, items: bookList });
   };
-  // console.log("book Response : ", bookResponse);
+
+  const addToCart = (book) => {
+    shared
+      .addToCart(book, authContext.user.id)
+      .then((res) => {
+        if (res.error) {
+          toast.error(res.message);
+        } else {
+          cartContext.updateCart();
+          toast.success(res.message);
+        }
+      })
+      .catch((err) => {
+        toast.warning(err);
+      });
+  };
+
   return (
     <div className="flex-1 ml-40 mr-40">
       <Typography
@@ -135,12 +139,6 @@ function Home() {
             <Typography variant="subtitle1" sx={{ marginRight: "10px" }}>
               Sort By
             </Typography>
-            {/* <FormControl sx={{ width: "236px" }}>
-              <Select onChange={sortBook} value={sortBy} size="small">
-                <MenuItem value="a-z">a - z</MenuItem>
-                <MenuItem value="z-a">z - a</MenuItem>
-              </Select>
-            </FormControl> */}
 
             <select onChange={sortBook} value={sortBy}>
               <option value="a-z">a - z</option>
@@ -187,6 +185,7 @@ function Home() {
                   fontWeight: "bold",
                 }}
                 fullWidth
+                onClick={() => addToCart(book)}
               >
                 add to cart
               </Button>
@@ -202,7 +201,6 @@ function Home() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            
           }}
           count={bookResponse.totalPages}
           page={filters.pageIndex}

@@ -7,6 +7,8 @@ import {
 } from "@mui/material";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuthContext } from "../context/auth";
+
 
 import { TextField } from "@mui/material";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
@@ -15,8 +17,12 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import authService from "../service/auth.service";
 import { toast, ToastContainer } from "react-toastify";
+import { updateUserName } from "../State/slice/userSlice";
+import { useDispatch } from "react-redux";
+
 
 function Login() {
+  const authContext = useAuthContext();
   const navigate = useNavigate();
   const initialValues = {
     email: "",
@@ -28,12 +34,22 @@ function Login() {
       .min(5, "Password must be 5 charaters at minimum")
       .required("Password must Required"),
   });
-
+  const dispatch=useDispatch()
   const onSubmit = (values) => {
+    if (authContext.user.id) {
+      
+      console.log(authContext.user.id)
+    }else{
+      console.log("none "+authContext.user);
+    }
     // alert(JSON.stringify(values));
     authService
       .login(values)
       .then((res) => {
+        console.log("this is data :",res)
+        localStorage.setItem("user", JSON.stringify(res));
+        dispatch(updateUserName(res))
+        
         delete res._id;
         delete res.__v;
         setTimeout(() => {
@@ -120,7 +136,7 @@ function Login() {
           </Button>
         </div>
         <div>
-          <Typography variant="h6">Ragistered Customers</Typography>
+          <Typography variant="h6">Registered Customers</Typography>
           <Divider
             sx={{
               marginTop: "20px",
@@ -186,6 +202,7 @@ function Login() {
                     },
                     marginTop: "60px",
                   }}
+                  
                 >
                   Submit
                 </Button>

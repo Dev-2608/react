@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -18,6 +17,8 @@ import userService from "../service/user.service";
 import authService from "../service/auth.service";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { updateUserName } from "../State/slice/userSlice";
+import { useDispatch } from "react-redux";
 
 function Register() {
   const navigate = useNavigate();
@@ -54,9 +55,13 @@ function Register() {
       .required("Required"),
     roleId: Yup.string().required("Role is required"),
   });
+  const dispatch=useDispatch()
+  
 
   const onSubmit = (values) => {
     delete values.confirmPassword;
+
+    localStorage.setItem("user", JSON.stringify(values));
     // alert(JSON.stringify(values));
     authService
       .create(values)
@@ -67,6 +72,8 @@ function Register() {
       .catch((err) => {
         console.log(err);
       });
+      // dispatch(updateUserName(values))
+   
   };
   const [roleList, setRoleList] = useState([]);
 

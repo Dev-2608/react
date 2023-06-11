@@ -1,15 +1,17 @@
-import { Button, Divider, Link, ListItem } from "@mui/material";
+import { Button, Divider } from "@mui/material";
 import React, { useMemo } from "react";
-
 import logo from "../assets/logo.jpg";
 import { HiShoppingCart } from "react-icons/hi";
-
 import { useNavigate } from "react-router-dom";
-import { useAuthContext } from "../context/auth";
+
 import shared from "../utils/shared";
-function Header() {
+
+import { useAuthContext } from "../context/auth";
+import { useCartContext } from "../context/cart";
+const Header = () => {
   const navigate = useNavigate();
   const authContext = useAuthContext();
+  const cartContext = useCartContext();
   const logOut = () => {
     authContext.signOut();
   };
@@ -58,19 +60,27 @@ function Header() {
             </>
           )}
           {items.map((item, index) => (
-            <Button
-              key={index}
-              variant="text"
-              sx={{
-                color: "#f14d54",
-                textTransform: "capitalize",
-              }}
-              onClick={() => {
-                navigate(item.route);
-              }}
-            >
-              {item.name}
-            </Button>
+            <>
+              <Button
+                key={index}
+                variant="text"
+                sx={{
+                  color: "#f14d54",
+                  textTransform: "capitalize",
+                }}
+                onClick={() => {
+                  navigate(item.route);
+                }}
+              >
+                {item.name}
+              </Button>
+              <Divider
+                orientation="vertical"
+                variant="middle"
+                flexItem
+                sx={{ backgroundColor: "#f14d54" }}
+              />
+            </>
           ))}
           <Button
             variant="outlined"
@@ -78,19 +88,28 @@ function Header() {
               color: "#f14d54",
               borderColor: "#f14d54",
               textTransform: "capitalize",
+              fontWeight: "bold",
             }}
             startIcon={<HiShoppingCart />}
             onClick={() => {
               navigate("/cart-page");
             }}
           >
-            {0} cart
+            {cartContext.cartData.length}
+            <span
+              style={{
+                color: "black",
+                marginLeft: "4px",
+                fontWeight: "normal",
+              }}
+            >
+              cart
+            </span>
           </Button>
           {!!authContext.user.id ? (
             <Button
               variant="contained"
               sx={{
-                // color: "black",
                 backgroundColor: "#f14d54",
                 "&:hover": {
                   backgroundColor: "#f14d54", // Change the hover background color
@@ -108,6 +127,6 @@ function Header() {
       </div>
     </>
   );
-}
+};
 
 export default Header;

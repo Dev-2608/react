@@ -3,6 +3,8 @@ import { createContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import shared from "../utils/shared";
+import { useDispatch } from "react-redux";
+import { setUSer1,removeUser1 } from "../State/slice/authSlice";
 
 const intialUserValue = {
   email: "",
@@ -25,6 +27,8 @@ const authContext = createContext(initialState);
 export const AuthWarpper = ({ children }) => {
   const [user, _setUser] = useState(intialUserValue);
   const navigate = useNavigate();
+  const dispatch=useDispatch()
+
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -35,6 +39,7 @@ export const AuthWarpper = ({ children }) => {
     if (!str.id) {
       navigate("/login");
     }
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -50,9 +55,12 @@ export const AuthWarpper = ({ children }) => {
       navigate("/");
       return;
     }
+    // eslint-disable-next-line
   }, [user, pathname]);
 
   const setUser = (user) => {
+    dispatch(setUSer1(user))
+    console.log(user)
     localStorage.setItem("user", JSON.stringify(user));
     _setUser(user);
   };
@@ -60,6 +68,7 @@ export const AuthWarpper = ({ children }) => {
   const signOut = () => {
     setUser(intialUserValue);
     localStorage.removeItem("user");
+    dispatch(removeUser1(""))
     navigate("/login");
   };
 
